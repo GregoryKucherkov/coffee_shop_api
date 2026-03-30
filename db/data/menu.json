@@ -1,0 +1,162 @@
+[
+    {
+        "name": "Espresso",
+        "category": "coffee",
+        "description": "Rich and bold single shot of concentrated coffee.",
+        "size": "small",
+        "price": 3.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/espresso_djqbbl.jpg"
+    },
+    {
+        "name": "Cappuccino",
+        "category": "coffee",
+        "description": "Perfect balance of espresso, steamed milk, and airy foam.",
+        "size": "small",
+        "price": 3.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/capuccino_fxeedt.jpg"
+    },
+    {
+        "name": "Cappuccino",
+        "category": "coffee",
+        "description": "Perfect balance of espresso, steamed milk, and airy foam.",
+        "size": "medium",
+        "price": 4.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/capuccino_fxeedt.jpg"
+    },
+    {
+        "name": "Cappuccino",
+        "category": "coffee",
+        "description": "Perfect balance of espresso, steamed milk, and airy foam.",
+        "size": "large",
+        "price": 5.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/capuccino_fxeedt.jpg"
+    },
+    {
+        "name": "Latte",
+        "category": "coffee",
+        "description": "Smooth espresso with a generous amount of steamed milk.",
+        "size": "small",
+        "price": 3.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/latte_1_n9rbbn.jpg"
+    },
+    {
+        "name": "Latte",
+        "category": "coffee",
+        "description": "Smooth espresso with a generous amount of steamed milk.",
+        "size": "medium",
+        "price": 4.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/latte_1_n9rbbn.jpg"
+    },
+    {
+        "name": "Latte",
+        "category": "coffee",
+        "description": "Smooth espresso with a generous amount of steamed milk.",
+        "size": "large",
+        "price": 5.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/latte_1_n9rbbn.jpg"
+    },
+    {
+        "name": "Iced Latte",
+        "category": "coffee",
+        "description": "Chilled espresso and milk served over ice.",
+        "size": "small",
+        "price": 4.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/iced_latte_oyyjjf.jpg"
+    },
+    {
+        "name": "Iced Latte",
+        "category": "coffee",
+        "description": "Chilled espresso and milk served over ice.",
+        "size": "medium",
+        "price": 5.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/iced_latte_oyyjjf.jpg"
+    },
+    {
+        "name": "Iced Latte",
+        "category": "coffee",
+        "description": "Chilled espresso and milk served over ice.",
+        "size": "large",
+        "price": 5.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/iced_latte_oyyjjf.jpg"
+    },
+    {
+        "name": "Earl Grey Tea",
+        "category": "tea",
+        "description": "Classic black tea infused with bergamot orange.",
+        "size": "small",
+        "price": 3.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/Earl_Grey_2_t6yp22.jpg"
+    },
+    {
+        "name": "Earl Grey Tea",
+        "category": "tea",
+        "description": "Classic black tea infused with bergamot orange.",
+        "size": "medium",
+        "price": 3.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/Earl_Grey_2_t6yp22.jpg"
+    },
+    {
+        "name": "Earl Grey Tea",
+        "category": "tea",
+        "description": "Classic black tea infused with bergamot orange.",
+        "size": "large",
+        "price": 4.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/Earl_Grey_2_t6yp22.jpg"
+    },
+    {
+        "name": "Matcha Green Tea",
+        "category": "tea",
+        "description": "Ceremonial grade Japanese green tea whisked to perfection.",
+        "size": "small",
+        "price": 4.25,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/matcha_mn13rn.webp"
+    },
+    {
+        "name": "Matcha Green Tea",
+        "category": "tea",
+        "description": "Ceremonial grade Japanese green tea whisked to perfection.",
+        "size": "medium",
+        "price": 4.75,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/matcha_mn13rn.webp"
+    },
+    {
+        "name": "Matcha Green Tea",
+        "category": "tea",
+        "description": "Ceremonial grade Japanese green tea whisked to perfection.",
+        "size": "large",
+        "price": 5.25,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/matcha_mn13rn.webp"
+    },
+    {
+        "name": "Cheesecake",
+        "category": "dessert",
+        "description": "Creamy New York style cheesecake with a graham cracker crust.",
+        "size": "medium",
+        "price": 6.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/cheesecake_mjl9tm.jpg"
+    },
+    {
+        "name": "Chocolate Brownie",
+        "category": "dessert",
+        "description": "Fudgy and decadent dark chocolate brownie.",
+        "size": "small",
+        "price": 4.0,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891338/brownie_fm3s15.jpg"
+    },
+    {
+        "name": "Smoked Salmon Savory Cake",
+        "category": "savory-cake",
+        "description": "Savory cake with smoked salmon, cream cheese, and fresh dill.",
+        "size": "medium",
+        "price": 8.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/salmon_pie_zd8ynv.jpg"
+    },
+    {
+        "name": "Chicken & Pesto Savory Cake",
+        "category": "savory-cake",
+        "description": "Hearty savory cake with roasted chicken and homemade basil pesto.",
+        "size": "medium",
+        "price": 7.5,
+        "image_url": "https://res.cloudinary.com/dsw7g6cth/image/upload/v1774891339/chicken_cake_dixoey.jpg"
+    }
+]
