@@ -32,9 +32,6 @@ const Menu = sequelize.define("Menu", {
     },
 });
 
-// Menu.sync();
-// Menu.sync({ alter: true });
-
 export const createMenuItemSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     category: Joi.string().min(3).max(30).required(),

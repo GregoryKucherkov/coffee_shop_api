@@ -28,15 +28,11 @@ const OrderItem = sequelize.define("OrderItem", {
     },
 });
 
-// OrderItem.sync();
-// OrderItem.sync({ alter: true });
-
 export const createOrderSchema = Joi.object({
     items: Joi.array()
         .items(
             Joi.object({
                 menuItemId: Joi.number().integer().required(),
-                // Quantity should be an integer (you can't buy 1.5 coffees)
                 quantity: Joi.number().integer().min(1).required(),
                 size: Joi.string()
                     .valid(...drinkSize)

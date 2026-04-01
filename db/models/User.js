@@ -16,7 +16,7 @@ const User = sequelize.define("User", {
         allowNull: false,
         unique: true,
     },
-    password_hash: {
+    password: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -31,18 +31,15 @@ const User = sequelize.define("User", {
     },
 });
 
-// User.sync();
-// User.sync({ alter: true });
-
 export const authRegisterSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     email: Joi.string().pattern(emailRegexp).max(50).required(),
-    password_hash: Joi.string().min(6).max(30).required(),
+    password: Joi.string().min(6).max(30).required(),
 });
 
 export const authLogInSchema = Joi.object({
     email: Joi.string().pattern(emailRegexp).max(50).required(),
-    password_hash: Joi.string().min(6).max(30).required(),
+    password: Joi.string().min(6).max(30).required(),
 });
 
 export default User;

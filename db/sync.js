@@ -6,13 +6,14 @@ const syncDatabase = async () => {
         console.log("Checking connection...");
         await sequelize.authenticate();
         await sequelize.sync({ alter: true });
-        await initDb();
+        // await sequelize.sync({ force: true });
+        // await initDb();
         await sequelize.close();
+        console.log("Database synchronized successfully!");
+
         process.exit(0);
 
         // Use { force: true } for restart
-        // await sequelize.sync({ force: true });
-        console.log("Database synchronized successfully!");
     } catch (error) {
         console.error("Sync failed:", error);
         await sequelize.close();

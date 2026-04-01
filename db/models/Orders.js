@@ -17,7 +17,4 @@ const Order = sequelize.define("Order", {
     },
 });
 
-// Order.sync();
-// Order.sync({ alter: true });
-
 export default Order;
