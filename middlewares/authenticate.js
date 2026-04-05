@@ -11,8 +11,9 @@ const authenticate = async (req, res, next) => {
     }
 
     const [bearer, token] = authorization.split(" ");
-    if (!bearer) {
-        return next(HttpError(401, "Bearer is missing"));
+
+    if (bearer !== "Bearer" || !token) {
+        return next(HttpError(401, "Bearer missing"));
     }
 
     const { payload, error } = verifyToken(token);
