@@ -5,6 +5,7 @@ export const registerController = cntrlWrapper(async (req, res, next) => {
     const newUser = await authServices.registerUser(req.body);
 
     res.status(201).json({
+        token,
         user: {
             email: newUser.email,
             name: newUser.name,

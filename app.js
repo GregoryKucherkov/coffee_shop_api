@@ -28,7 +28,7 @@ app.use((err, req, res, next) => {
     res.status(status).json({ message });
 });
 
-const port = Number(envConfig.PORT);
+const port = Number(envConfig.PORT) || 3000;
 
 const start = async () => {
     try {
