@@ -30,6 +30,8 @@ export const registerUser = async (data) => {
 
     const token = generateToken({ email: newUser.email });
 
+    console.log("👉 TOKEN GENERATED:", token);
+
     await newUser.update({ token });
 
     return {
