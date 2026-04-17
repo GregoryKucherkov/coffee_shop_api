@@ -30,8 +30,6 @@ export const registerUser = async (data) => {
 
     const token = generateToken({ email: newUser.email });
 
-    console.log("👉 TOKEN GENERATED:", token);
-
     await newUser.update({ token });
 
     return {
@@ -63,8 +61,6 @@ export const loginUser = async (data) => {
     };
 
     const token = generateToken(payload);
-
-    console.log("👉 TOKEN GENERATED:", token);
 
     await user.update({ token });
 
