@@ -64,6 +64,8 @@ export const loginUser = async (data) => {
 
     const token = generateToken(payload);
 
+    console.log("👉 TOKEN GENERATED:", token);
+
     await user.update({ token });
 
     return {
