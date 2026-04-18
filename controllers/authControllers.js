@@ -2,7 +2,7 @@ import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
 import * as authServices from "../services/authServices.js";
 
 export const registerController = cntrlWrapper(async (req, res, next) => {
-    const newUser = await authServices.registerUser(req.body);
+    const { newUser, token } = await authServices.registerUser(req.body);
 
     res.status(201).json({
         token,
