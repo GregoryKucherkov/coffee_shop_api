@@ -1,6 +1,13 @@
 import HttpError from "../utils/HttpError.js";
+import Stripe from "stripe";
 
 import { sequelize, Menu, Order, OrderItem } from "../db/models/index.js";
+import { envConfig } from "../envConfig.js";
+import { PAYMENTSTATUS } from "../constants/orderStatus.js";
+
+const { STRIPE_SECRET_KEY } = envConfig;
+
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export const placeOrder = async (userId, items) => {
     const itemIds = items.map((i) => i.menuItemId);
@@ -31,11 +38,18 @@ export const placeOrder = async (userId, items) => {
     });
 
     return await sequelize.transaction(async (t) => {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(total * 100), // Convert to cents (e.g., 10.50 -> 1050)
+            currency: "eur",
+            automatic_payment_methods: { enabled: true },
+        });
+
         const newOrder = await Order.create(
             {
                 userId,
                 totalPrice: total,
-                status: false,
+                status: PAYMENTSTATUS[0],
+                stripePaymentId: paymentIntent.id,
             },
             { transaction: t },
         );
@@ -47,7 +61,11 @@ export const placeOrder = async (userId, items) => {
 
         await OrderItem.bulkCreate(finalOrderItems, { transaction: t });
 
-        return { order: newOrder, items: finalOrderItems };
+        return {
+            order: newOrder,
+            items: finalOrderItems,
+            clientSecret: paymentIntent.client_secret,
+        };
     });
 };
 
@@ -92,11 +110,14 @@ export const getAllOrders = ({ offset, limit }) => {
     });
 };
 
-// export const updateOrderStatus = async (id, status) => {
-//     const order = await Order.findByPk(id);
-//     if (!order) {
-//         return null;
-//     }
+export const updateOrderStatus = async (stripeId, status) => {
+    const order = await Order.findOne({
+        where: { stripePaymentId: stripeId },
+    });
 
-//     return order.update({ status: status });
-// };
+    if (!order) {
+        return null;
+    }
+
+    return await order.update({ status });
+};

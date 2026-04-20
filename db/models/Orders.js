@@ -15,6 +15,10 @@ const Order = sequelize.define("Order", {
         type: DataTypes.ENUM(...PAYMENTSTATUS),
         defaultValue: PAYMENTSTATUS[0],
     },
+    stripePaymentId: {
+        type: DataTypes.STRING,
+        allowNull: true, // It's null until the moment the intent is created
+    },
 });
 
 export default Order;

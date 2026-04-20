@@ -24,7 +24,8 @@
         "nanoid": "^5.1.7",
         "pg": "^8.20.0",
         "pg-hstore": "^2.3.4",
-        "sequelize": "^6.37.8"
+        "sequelize": "^6.37.8",
+        "stripe": "^22.0.2"
     },
     "devDependencies": {
         "nodemon": "^3.1.14"

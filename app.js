@@ -13,7 +13,14 @@ const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
-app.use(express.json());
+// app.use(express.json());
+app.use((req, res, next) => {
+    if (req.originalUrl === "/api/order/webhook") {
+        next(); // Skip global JSON parsing for the webhook
+    } else {
+        express.json()(req, res, next);
+    }
+});
 
 app.use("/api/auth", authRouter);
 app.use("/api/menu", menuRouter);

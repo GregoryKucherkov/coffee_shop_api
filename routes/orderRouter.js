@@ -5,12 +5,19 @@ import {
     getUserOrders,
     getOrderById,
     getAllOrders,
+    stripeWebhookHandler,
 } from "../controllers/orderController.js";
 import authenticate from "../middlewares/authenticate.js";
 import { validateBody } from "../decorators/validateBody.js";
 import { createOrderSchema } from "../db/models/OrderItems.js";
 
 const orderRouter = express.Router();
+
+orderRouter.post(
+    "/webhook",
+    express.raw({ type: "application/json" }),
+    stripeWebhookHandler,
+);
 
 orderRouter.use(authenticate);
 

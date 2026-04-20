@@ -1,6 +1,59 @@
+import { PAYMENTSTATUS } from "../constants/orderStatus.js";
 import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
+import { envConfig } from "../envConfig.js";
 import * as orderService from "../services/orderService.js";
 import HttpError from "../utils/HttpError.js";
+import Stripe from "stripe";
+
+const { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET } = envConfig;
+
+const stripe = new Stripe(STRIPE_SECRET_KEY);
+
+export const stripeWebhookHandler = cntrlWrapper(async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+        // You get this WEBHOOK_SECRET from your Stripe Dashboard or CLI
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            STRIPE_WEBHOOK_SECRET,
+        );
+    } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the successful payment event
+    if (event.type === "payment_intent.succeeded") {
+        const paymentIntent = event.data.object;
+
+        // Use a service to update the order status to "paid"
+        // We find the order using the paymentIntent.id
+        await orderService.updateOrderStatus(
+            paymentIntent.id,
+            PAYMENTSTATUS[1],
+        );
+        if (!updatedOrder) {
+            console.error(
+                `Order not found for Payment ID: ${paymentIntent.id}`,
+            );
+        }
+    } else if (
+        event.type === "payment_intent.payment_failed" ||
+        event.type === "payment_intent.canceled"
+    ) {
+        const paymentIntent = event.data.object;
+        await orderService.updateOrderStatus(
+            paymentIntent.id,
+            PAYMENTSTATUS[2],
+        ); // "cancelled"
+
+        console.log(`Payment ${paymentIntent.id} failed or was canceled.`);
+    }
+
+    res.status(200).json({ received: true });
+});
 
 export const createOrder = cntrlWrapper(async (req, res, next) => {
     const { id: userId } = req.user;
