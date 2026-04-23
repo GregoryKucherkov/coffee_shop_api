@@ -6,6 +6,7 @@ import {
     getOrderById,
     getAllOrders,
     stripeWebhookHandler,
+    updatePaymentStatus,
 } from "../controllers/orderController.js";
 import authenticate from "../middlewares/authenticate.js";
 import { validateBody } from "../decorators/validateBody.js";
@@ -25,9 +26,11 @@ orderRouter.use(authenticate);
 orderRouter.get("/", getUserOrders);
 orderRouter.get("/:id", getOrderById);
 orderRouter.post("/", validateBody(createOrderSchema), createOrder);
+orderRouter
+    .patch("/updateStatus", updatePaymentStatus)
 
-// ADMIN ONLY ROUTES
-orderRouter.get("/admin/all", getAllOrders); // See everything
+    // ADMIN ONLY ROUTES
+    .orderRouter.get("/admin/all", getAllOrders); // See everything
 // orderRouter.patch("/:id/status", updateOrderStatus); // Mark as "Ready"
 
 export default orderRouter;

@@ -1,3 +1,4 @@
+import { or } from "sequelize";
 import { PAYMENTSTATUS } from "../constants/orderStatus.js";
 import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
 import { envConfig } from "../envConfig.js";
@@ -14,7 +15,6 @@ export const stripeWebhookHandler = cntrlWrapper(async (req, res) => {
     let event;
 
     try {
-        // You get this WEBHOOK_SECRET from your Stripe Dashboard or CLI
         event = stripe.webhooks.constructEvent(
             req.body,
             sig,
@@ -95,6 +95,27 @@ export const getOrderById = cntrlWrapper(async (req, res, next) => {
     const order = await orderService.getOrderById({ id, userId });
     if (!order) {
         throw HttpError(404, "Order was not found");
+    }
+
+    res.json({
+        status: "success",
+        code: 200,
+        data: order,
+    });
+});
+
+export const updatePaymentStatus = cntrlWrapper(async (req, res, next) => {
+    const { orderId: stripeId, status } = req.body;
+    const { id: userId } = req.user;
+
+    const order = await orderService.updateOrderStatus(
+        stripeId,
+        status,
+        userId,
+    );
+
+    if (!order) {
+        throw HttpError(404, "Order was not found!");
     }
 
     res.json({

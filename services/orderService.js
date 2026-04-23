@@ -112,7 +112,10 @@ export const getAllOrders = ({ offset, limit }) => {
 
 export const updateOrderStatus = async (stripeId, status) => {
     const order = await Order.findOne({
-        where: { stripePaymentId: stripeId },
+        where: {
+            stripePaymentId: stripeId,
+            userId: userId,
+        },
     });
 
     if (!order) {
