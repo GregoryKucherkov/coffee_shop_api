@@ -30,7 +30,7 @@ export const stripeWebhookHandler = cntrlWrapper(async (req, res) => {
 
         // Use a service to update the order status to "paid"
         // We find the order using the paymentIntent.id
-        await orderService.updateOrderStatus(
+        const updatedOrder = await orderService.updateOrderStatus(
             paymentIntent.id,
             PAYMENTSTATUS[1],
         );

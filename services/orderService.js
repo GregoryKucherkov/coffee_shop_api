@@ -110,13 +110,14 @@ export const getAllOrders = ({ offset, limit }) => {
     });
 };
 
-export const updateOrderStatus = async (stripeId, status) => {
-    const order = await Order.findOne({
-        where: {
-            stripePaymentId: stripeId,
-            userId: userId,
-        },
-    });
+export const updateOrderStatus = async (stripeId, status, userId = null) => {
+    const query = { stripePaymentId: stripeId };
+
+    if (userId) {
+        query.userId = userId;
+    }
+
+    const order = await Order.findOne({ where: query });
 
     if (!order) {
         return null;
