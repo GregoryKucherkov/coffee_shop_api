@@ -77,7 +77,9 @@ export const getUserOrders = ({ userId, offset, limit }) => {
         include: [
             {
                 model: OrderItem,
-                include: [{ model: Menu, attributes: ["name", "price"] }],
+                include: [
+                    { model: Menu, attributes: ["name", "price", "image_url"] },
+                ],
             },
         ],
         order: [["createdAt", "DESC"]],
@@ -90,7 +92,9 @@ export const getOrderById = (query) => {
         include: [
             {
                 model: OrderItem,
-                include: [{ model: Menu, attributes: ["name", "price"] }],
+                include: [
+                    { model: Menu, attributes: ["name", "price", "image_url"] },
+                ],
             },
         ],
     });
