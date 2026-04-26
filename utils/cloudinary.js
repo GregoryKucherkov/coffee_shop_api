@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import { envConfig } from "../envConfig";
+import { envConfig } from "../envConfig.js";
 
 const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
     envConfig;

@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "node:path";
-import HttpError from "../utils/HttpError";
+import HttpError from "../utils/HttpError.js";
 import { v4 as uuidv4 } from "uuid";
 
 const tempDir = path.resolve("temp");

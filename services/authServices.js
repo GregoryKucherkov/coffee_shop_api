@@ -2,15 +2,13 @@ import bcrypt from "bcrypt";
 
 import { User } from "../db/models/index.js";
 
-import HttpError from "../utils/HttpError.js";
-
 import { generateToken } from "../utils/jwt.js";
 
 import gravatar from "gravatar";
-import { use } from "react";
 
 import fs from "node:fs/promises";
 import cloudinary from "../utils/cloudinary.js";
+import HttpError from "../utils/HttpError.js";
 
 export const findUser = (query) =>
     User.findOne({
