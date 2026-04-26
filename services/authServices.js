@@ -6,6 +6,12 @@ import HttpError from "../utils/HttpError.js";
 
 import { generateToken } from "../utils/jwt.js";
 
+import gravatar from "gravatar";
+import { use } from "react";
+
+import fs from "node:fs/promises";
+import cloudinary from "../utils/cloudinary.js";
+
 export const findUser = (query) =>
     User.findOne({
         where: query,
@@ -24,9 +30,23 @@ export const registerUser = async (data) => {
         throw HttpError(409, "Email already in use");
     }
 
+    const avatarURL = gravatar.url(
+        email,
+        {
+            s: "200",
+            r: "pg",
+            d: "monsterid",
+        },
+        true,
+    );
+
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({ ...data, password: hashPassword });
+    const newUser = await User.create({
+        ...data,
+        password: hashPassword,
+        avatarURL,
+    });
 
     const token = generateToken({ email: newUser.email });
 
@@ -37,6 +57,13 @@ export const registerUser = async (data) => {
         token,
     };
 };
+
+// export const verifyUser = async (verificationToken) => {
+//     const user = await findUser({ verificationToken });
+//     if (!user) {
+//         throw HttpError(404, "User not found or user already verified");
+//     }
+// };
 
 export const loginUser = async (data) => {
     const { email, password } = data;
@@ -67,6 +94,7 @@ export const loginUser = async (data) => {
     return {
         token,
         email: user.email,
+        avatarURL: user.avatarURL,
     };
 };
 
@@ -78,4 +106,29 @@ export const logoutUser = async (id) => {
     }
 
     await user.update({ token: null });
+};
+
+export const updateAvatar = async (userId, file) => {
+    if (!file) {
+        throw HttpError(400, "No file uploaded");
+    }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+        await fs.unlink(file.path);
+        throw HttpError(404, "User not found");
+    }
+
+    const { url } = await cloudinary.uploader.upload(file.path, {
+        folder: "coffee_shop/avatars",
+        transformation: [
+            { width: 250, height: 250, crop: "fill", gravity: "face" },
+        ],
+    });
+    await fs.unlink(file.path);
+
+    await user.update({ avatarURL: url });
+
+    return user;
 };

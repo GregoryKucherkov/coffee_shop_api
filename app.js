@@ -21,6 +21,7 @@ app.use((req, res, next) => {
         express.json()(req, res, next);
     }
 });
+app.use(express.static("public"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/menu", menuRouter);

@@ -20,6 +20,7 @@ export const loginController = cntrlWrapper(async (req, res, next) => {
         token,
         user: {
             email,
+            avatarURL,
         },
     });
 });
@@ -30,6 +31,7 @@ export const getCurrentController = cntrlWrapper(async (req, res, next) => {
     res.json({
         name,
         email,
+        avatarURL,
     });
 });
 
@@ -39,4 +41,19 @@ export const logoutController = cntrlWrapper(async (req, res, next) => {
     await authServices.logoutUser(id);
 
     res.status(204).send();
+});
+
+export const updateAvatar = cntrlWrapper(async (req, res, next) => {
+    const { id: userId } = req.user;
+
+    const user = await authServices.updateAvatar(userId, req.file);
+
+    res.json({
+        status: "success",
+        code: 200,
+        data: {
+            email: user.email,
+            avatarURL: user.avatarURL,
+        },
+    });
 });
