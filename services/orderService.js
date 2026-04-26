@@ -1,7 +1,14 @@
 import HttpError from "../utils/HttpError.js";
 import Stripe from "stripe";
 
-import { sequelize, Menu, Order, OrderItem } from "../db/models/index.js";
+import {
+    sequelize,
+    Menu,
+    Order,
+    OrderItem,
+    Bonuses,
+    User,
+} from "../db/models/index.js";
 import { envConfig } from "../envConfig.js";
 import { PAYMENTSTATUS } from "../constants/orderStatus.js";
 
@@ -107,7 +114,9 @@ export const getAllOrders = ({ offset, limit }) => {
         include: [
             {
                 model: OrderItem,
-                include: [{ model: Menu, attributes: ["name", "price"] }],
+                include: [
+                    { model: Menu, attributes: ["name", "price", "image_url"] },
+                ],
             },
         ],
         order: [["createdAt", "DESC"]],
@@ -125,6 +134,26 @@ export const updateOrderStatus = async (stripeId, status, userId = null) => {
 
     if (!order) {
         return null;
+    }
+
+    if (status === PAYMENTSTATUS[1] && order.status !== PAYMENTSTATUS[1]) {
+        const bonusAmount = Number(order.totalPrice) * 0.03;
+
+        await sequelize.transaction(async (t) => {
+            await Bonuses.create(
+                {
+                    userId: order.userId,
+                    amount: bonusAmount,
+                    orderId: order.id,
+                },
+                { transaction: t },
+            );
+
+            await User.increment(
+                { totalBonus: bonusAmount },
+                { where: { id: order.userId }, transaction: t },
+            );
+        });
     }
 
     return await order.update({ status });

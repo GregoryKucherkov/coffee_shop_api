@@ -57,3 +57,18 @@ export const updateAvatar = cntrlWrapper(async (req, res, next) => {
         },
     });
 });
+
+export const getBonusHistory = cntrlWrapper(async (req, res) => {
+    const { id: userId } = req.user;
+    const { page = 1, limit = 10 } = req.query;
+
+    const offset = (page - 1) * limit;
+
+    const data = await authServices.getUserBonusHistory(userId, limit, offset);
+
+    res.json({
+        status: "success",
+        code: 200,
+        data,
+    });
+});

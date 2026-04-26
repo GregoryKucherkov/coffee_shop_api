@@ -7,6 +7,7 @@ import {
     getCurrentController,
     logoutController,
     updateAvatar,
+    getBonusHistory,
 } from "../controllers/authControllers.js";
 
 import authenticate from "../middlewares/authenticate.js";
@@ -32,5 +33,7 @@ authRouter.patch(
     upload.single("avatar"),
     updateAvatar,
 );
+
+authRouter.get("/bonuses", authenticate, getBonusHistory);
 
 export default authRouter;

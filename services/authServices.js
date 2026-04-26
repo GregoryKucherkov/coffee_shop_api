@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { User } from "../db/models/index.js";
+import { Bonuses, Menu, Order, OrderItem, User } from "../db/models/index.js";
 
 import { generateToken } from "../utils/jwt.js";
 
@@ -129,4 +129,49 @@ export const updateAvatar = async (userId, file) => {
     await user.update({ avatarURL: url });
 
     return user;
+};
+
+export const getUserBonusHistory = async (userId, limit = 10, offset = 0) => {
+    const user = await User.findByPk(userId, {
+        attributes: ["totalBonus"],
+    });
+
+    const { count, rows } = await Bonuses.findAndCountAll({
+        // 1. Filter by the user
+        where: { userId },
+
+        limit: Number(limit),
+        offset: Number(offset),
+        order: [["createdAt", "DESC"]],
+
+        // 4. Attributes for the bonus itself
+        attributes: ["id", "amount", "createdAt"],
+
+        // 5. Deep nesting for the order details
+        include: [
+            {
+                model: Order,
+                attributes: ["id", "totalPrice", "status"],
+                include: [
+                    {
+                        model: OrderItem,
+                        attributes: ["quantity", "price", "size"],
+                        include: [
+                            {
+                                model: Menu,
+                                attributes: ["name", "imageURL"],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    });
+
+    return {
+        balance: user?.totalBonus || "0.00",
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        history: rows,
+    };
 };

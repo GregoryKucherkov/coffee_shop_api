@@ -30,6 +30,11 @@ const User = sequelize.define("User", {
         type: DataTypes.STRING,
         defaultValue: null,
     },
+    totalBonus: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0.0,
+    },
 });
 
 export const authRegisterSchema = Joi.object({
