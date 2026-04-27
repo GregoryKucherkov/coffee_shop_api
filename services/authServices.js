@@ -153,18 +153,6 @@ export const getUserBonusHistory = async (userId, limit = 10, offset = 0) => {
             {
                 model: Order,
                 attributes: ["id", "totalPrice", "status"],
-                include: [
-                    {
-                        model: OrderItem,
-                        attributes: ["quantity", "price", "size"],
-                        include: [
-                            {
-                                model: Menu,
-                                attributes: ["name", "imageURL"],
-                            },
-                        ],
-                    },
-                ],
             },
         ],
     });
