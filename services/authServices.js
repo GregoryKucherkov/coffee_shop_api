@@ -40,15 +40,16 @@ export const registerUser = async (data) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
-        ...data,
-        password: hashPassword,
-        avatarURL,
-    });
-
     const token = generateToken({ email: newUser.email });
 
-    await newUser.update({ token });
+    const newUser = await User.create({
+        // ...data,  //can be compromised by adding bonuses, or role
+        name: data.name,
+        email: data.email,
+        password: hashPassword,
+        avatarURL,
+        token,
+    });
 
     return {
         newUser,

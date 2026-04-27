@@ -9,6 +9,7 @@ export const registerController = cntrlWrapper(async (req, res, next) => {
         user: {
             email: newUser.email,
             name: newUser.name,
+            avatarURL: newUser.avatarURL,
         },
     });
 });
@@ -26,7 +27,7 @@ export const loginController = cntrlWrapper(async (req, res, next) => {
 });
 
 export const getCurrentController = cntrlWrapper(async (req, res, next) => {
-    const { email, name } = req.user;
+    const { email, name, avatarURL } = req.user;
 
     res.json({
         name,
