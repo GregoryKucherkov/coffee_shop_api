@@ -14,7 +14,7 @@ export const registerController = cntrlWrapper(async (req, res, next) => {
 });
 
 export const loginController = cntrlWrapper(async (req, res, next) => {
-    const { token, email } = await authServices.loginUser(req.body);
+    const { token, email, avatarURL } = await authServices.loginUser(req.body);
 
     res.json({
         token,
