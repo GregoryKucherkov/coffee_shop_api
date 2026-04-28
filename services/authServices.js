@@ -120,7 +120,7 @@ export const updateAvatar = async (userId, file) => {
         throw HttpError(404, "User not found");
     }
 
-    const { url } = await cloudinary.uploader.upload(file.path, {
+    const { secure_url } = await cloudinary.uploader.upload(file.path, {
         folder: "coffee_shop/avatars",
         transformation: [
             { width: 250, height: 250, crop: "fill", gravity: "face" },
@@ -128,7 +128,7 @@ export const updateAvatar = async (userId, file) => {
     });
     await fs.unlink(file.path);
 
-    await user.update({ avatarURL: url });
+    await user.update({ avatarURL: secure_url });
 
     return user;
 };
