@@ -41,6 +41,7 @@ export const createOrderSchema = Joi.object({
         )
         .min(1)
         .required(),
+    useBonus: Joi.boolean().optional(),
 });
 
 export default OrderItem;

@@ -57,9 +57,9 @@ export const stripeWebhookHandler = cntrlWrapper(async (req, res) => {
 
 export const createOrder = cntrlWrapper(async (req, res, next) => {
     const { id: userId } = req.user;
-    const { items } = req.body;
+    const { items, useBonus } = req.body;
 
-    const result = await orderService.placeOrder(userId, items);
+    const result = await orderService.placeOrder(userId, items, useBonus);
 
     res.status(201).json({
         status: "success",

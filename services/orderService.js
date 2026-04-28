@@ -16,7 +16,7 @@ const { STRIPE_SECRET_KEY } = envConfig;
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-export const placeOrder = async (userId, items) => {
+export const placeOrder = async (userId, items, useBonus = false) => {
     const itemIds = items.map((i) => i.menuItemId);
     const menuItems = await Menu.findAll({ where: { id: itemIds } });
 
@@ -45,6 +45,27 @@ export const placeOrder = async (userId, items) => {
     });
 
     return await sequelize.transaction(async (t) => {
+        let appliedDiscount = 0;
+
+        if (useBonus) {
+            const user = await User.findByPk(userId, {
+                attributes: ["id", "totalBonus"],
+                transaction: t,
+            });
+            const userBalance = Number(user.totalBonus);
+
+            if (userBalance > 0) {
+                appliedDiscount = Math.min(total, userBalance);
+
+                total -= appliedDiscount;
+
+                await user.decrement("totalBonus", {
+                    by: appliedDiscount,
+                    transaction: t,
+                });
+            }
+        }
+
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(total * 100), // Convert to cents (e.g., 10.50 -> 1050)
             currency: "eur",
@@ -60,6 +81,17 @@ export const placeOrder = async (userId, items) => {
             },
             { transaction: t },
         );
+
+        if (appliedDiscount > 0) {
+            await Bonuses.create(
+                {
+                    userId,
+                    amount: -appliedDiscount, // Negative because they spent it
+                    orderId: newOrder.id,
+                },
+                { transaction: t },
+            );
+        }
 
         const finalOrderItems = itemsData.map((item) => ({
             ...item,
