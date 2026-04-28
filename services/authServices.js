@@ -94,6 +94,7 @@ export const loginUser = async (data) => {
         token,
         email: user.email,
         avatarURL: user.avatarURL,
+        totalBonus: user.totalBonus,
     };
 };
 

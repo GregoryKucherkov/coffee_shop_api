@@ -15,24 +15,27 @@ export const registerController = cntrlWrapper(async (req, res, next) => {
 });
 
 export const loginController = cntrlWrapper(async (req, res, next) => {
-    const { token, email, avatarURL } = await authServices.loginUser(req.body);
+    const { token, email, avatarURL, totalBonus } =
+        await authServices.loginUser(req.body);
 
     res.json({
         token,
         user: {
             email,
             avatarURL,
+            totalBonus,
         },
     });
 });
 
 export const getCurrentController = cntrlWrapper(async (req, res, next) => {
-    const { email, name, avatarURL } = req.user;
+    const { email, name, avatarURL, totalBonus } = req.user;
 
     res.json({
         name,
         email,
         avatarURL,
+        totalBonus,
     });
 });
 
