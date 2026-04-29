@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 
+import { Op } from "sequelize";
+
 import { Bonuses, Menu, Order, OrderItem, User } from "../db/models/index.js";
 
 import { generateToken } from "../utils/jwt.js";
@@ -131,6 +133,65 @@ export const updateAvatar = async (userId, file) => {
     await user.update({ avatarURL: secure_url });
 
     return user;
+};
+
+export const editUserEmail = async (userId, newEmail) => {
+    const [user, emailCheck] = await Promise.all([
+        User.findByPk(userId),
+        User.findOne({
+            where: {
+                email: newEmail,
+                id: { [Op.ne]: userId },
+            },
+        }),
+    ]);
+
+    if (!user) {
+        throw HttpError(404, "User not found");
+    }
+
+    if (emailCheck) {
+        throw HttpError(409, "Email already in use");
+    }
+
+    await user.update({ email: newEmail });
+
+    return user;
+};
+
+export const editUserName = async (userId, newName) => {
+    const user = await User.findByPk(userId);
+    if (!user) {
+        throw HttpError(404, "User not found");
+    }
+
+    await user.update({ name: newName });
+
+    return user;
+};
+
+export const editPassword = async (userId, oldPassword, newPassword) => {
+    const user = await User.findByPk(userId);
+    if (!user) {
+        throw HttpError(404, "User not found");
+    }
+
+    const passwordCompare = await bcrypt.compare(oldPassword, user.password);
+
+    if (!passwordCompare) {
+        throw HttpError(401, "Old password is incorrect");
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+        throw HttpError(400, "New password must be different from the old one");
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+
+    await user.update({ password: hashPassword });
+
+    return true;
 };
 
 export const getUserBonusHistory = async (userId, limit = 10, offset = 0) => {

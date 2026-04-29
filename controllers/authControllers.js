@@ -62,6 +62,49 @@ export const updateAvatar = cntrlWrapper(async (req, res, next) => {
     });
 });
 
+export const editEmail = cntrlWrapper(async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { email } = req.body;
+
+    const user = await authServices.editUserEmail(userId, email);
+
+    res.json({
+        status: "success",
+        code: 200,
+        data: {
+            email: user.email,
+        },
+    });
+});
+
+export const editName = cntrlWrapper(async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { newName } = req.body;
+
+    const user = await authServices.editUserName(userId, newName);
+
+    res.json({
+        status: "success",
+        code: 200,
+        data: {
+            email: user.email,
+            name: user.name,
+        },
+    });
+});
+
+export const editPasswordController = cntrlWrapper(async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { oldPassword, newPassword } = req.body;
+
+    await authServices.editPassword(userId, oldPassword, newPassword);
+
+    res.json({
+        status: "success",
+        code: 200,
+    });
+});
+
 export const getBonusHistory = cntrlWrapper(async (req, res) => {
     const { id: userId } = req.user;
     const { page = 1, limit = 10 } = req.query;
@@ -73,6 +116,6 @@ export const getBonusHistory = cntrlWrapper(async (req, res) => {
     res.json({
         status: "success",
         code: 200,
-        data,
+        message: "Password updated successfully",
     });
 });

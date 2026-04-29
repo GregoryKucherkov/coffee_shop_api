@@ -48,4 +48,16 @@ export const authLogInSchema = Joi.object({
     password: Joi.string().min(6).max(30).required(),
 });
 
+export const authEditEmailSchema = Joi.object({
+    email: Joi.string().pattern(emailRegexp).max(50).required(),
+});
+
+export const authEditNameSchema = Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+});
+
+export const authEditPassSchema = Joi.object({
+    password: Joi.string().min(6).max(30).required(),
+});
+
 export default User;
