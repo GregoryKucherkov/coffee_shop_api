@@ -49,7 +49,7 @@ export const registerUser = async (data) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const token = generateToken({ email: newUser.email });
+    const token = generateToken({ email });
 
     const newUser = await User.create({
         // ...data,  //can be compromised by adding bonuses, or role
