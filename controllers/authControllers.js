@@ -105,7 +105,7 @@ export const editPasswordController = cntrlWrapper(async (req, res, next) => {
     });
 });
 
-export const getBonusHistory = cntrlWrapper(async (req, res) => {
+export const getBonusHistory = cntrlWrapper(async (req, res, next) => {
     const { id: userId } = req.user;
     const { page = 1, limit = 10 } = req.query;
 
@@ -117,5 +117,16 @@ export const getBonusHistory = cntrlWrapper(async (req, res) => {
         status: "success",
         code: 200,
         message: "Password updated successfully",
+    });
+});
+
+export const deleteAccount = cntrlWrapper(async (req, res, next) => {
+    const { id: userId } = req.user;
+
+    await authServices.deleteAccount(userId);
+
+    res.json({
+        status: "success",
+        code: 200,
     });
 });

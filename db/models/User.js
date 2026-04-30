@@ -6,36 +6,44 @@ import Joi from "joi";
 
 import { emailRegexp, RIGHTS } from "../../constants/auth.js";
 
-const User = sequelize.define("User", {
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+const User = sequelize.define(
+    "User",
+    {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        role: {
+            type: DataTypes.ENUM(...RIGHTS),
+            allowNull: false,
+            defaultValue: RIGHTS[0],
+        },
+        avatarURL: DataTypes.STRING,
+        token: {
+            type: DataTypes.STRING,
+            defaultValue: null,
+        },
+        totalBonus: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            defaultValue: 0.0,
+        },
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+    {
+        // OPTIONS OBJECT
+        timestamps: true,
+        paranoid: true,
     },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    role: {
-        type: DataTypes.ENUM(...RIGHTS),
-        allowNull: false,
-        defaultValue: RIGHTS[0],
-    },
-    avatarURL: DataTypes.STRING,
-    token: {
-        type: DataTypes.STRING,
-        defaultValue: null,
-    },
-    totalBonus: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        defaultValue: 0.0,
-    },
-});
+);
 
 export const authRegisterSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),

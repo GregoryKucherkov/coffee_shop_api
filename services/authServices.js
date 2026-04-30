@@ -24,9 +24,16 @@ export const registerUser = async (data) => {
         where: {
             email,
         },
+        paranoid: false,
     });
 
     if (user) {
+        if (user.deletedAt) {
+            throw HttpError(
+                409,
+                "Account exists but is deactivated. Please log in to restore.",
+            );
+        }
         throw HttpError(409, "Email already in use");
     }
 
@@ -73,6 +80,7 @@ export const loginUser = async (data) => {
         where: {
             email,
         },
+        paranoid: false,
     });
     if (!user) {
         throw HttpError(401, "Email or password invalid");
@@ -82,6 +90,11 @@ export const loginUser = async (data) => {
 
     if (!passwordCompare) {
         throw HttpError(401, "Email or password is wrong");
+    }
+
+    // RESTORATION
+    if (user.deletedAt) {
+        await user.restore();
     }
 
     const payload = {
@@ -225,4 +238,15 @@ export const getUserBonusHistory = async (userId, limit = 10, offset = 0) => {
         totalPages: Math.ceil(count / limit),
         history: rows,
     };
+};
+
+export const deleteAccount = async (userId) => {
+    const user = await User.findByPk(userId);
+    if (!user) {
+        throw HttpError(404, "User not found");
+    }
+
+    await user.destroy();
+
+    return true;
 };
