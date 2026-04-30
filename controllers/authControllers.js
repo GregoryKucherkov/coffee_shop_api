@@ -122,11 +122,14 @@ export const getBonusHistory = cntrlWrapper(async (req, res, next) => {
 
 export const deleteAccount = cntrlWrapper(async (req, res, next) => {
     const { id: userId } = req.user;
+    const { deletePassword } = req.body;
 
-    await authServices.deleteAccount(userId);
+    await authServices.deleteAccount(userId, deletePassword);
 
     res.json({
         status: "success",
         code: 200,
+        message:
+            "Account paused for 30 days. You will be able to restore it during this period!",
     });
 });

@@ -17,6 +17,7 @@ import {
     editEmail,
     editName,
     editPasswordController,
+    deleteAccount,
 } from "../controllers/authControllers.js";
 
 import authenticate from "../middlewares/authenticate.js";
@@ -63,6 +64,8 @@ authRouter.patch(
     validateBody(authEditPassSchema),
     editPasswordController,
 );
+
+authRouter.delete("/destroy", authenticate, deleteAccount);
 
 authRouter.get("/bonuses", authenticate, getBonusHistory);
 

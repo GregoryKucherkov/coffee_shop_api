@@ -240,10 +240,16 @@ export const getUserBonusHistory = async (userId, limit = 10, offset = 0) => {
     };
 };
 
-export const deleteAccount = async (userId) => {
+export const deleteAccount = async (userId, password) => {
     const user = await User.findByPk(userId);
     if (!user) {
         throw HttpError(404, "User not found");
+    }
+
+    const passwordCompare = await bcrypt.compare(password, user.password);
+
+    if (!passwordCompare) {
+        throw HttpError(401, "Password is wrong!");
     }
 
     await user.destroy();
