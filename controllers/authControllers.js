@@ -109,14 +109,21 @@ export const getBonusHistory = cntrlWrapper(async (req, res, next) => {
     const { id: userId } = req.user;
     const { page = 1, limit = 10 } = req.query;
 
-    const offset = (page - 1) * limit;
+    const limitNum = Number(limit);
+    const offset = (Number(page) - 1) * limitNum;
 
-    const data = await authServices.getUserBonusHistory(userId, limit, offset);
+    const data = await authServices.getUserBonusHistory(
+        userId,
+        limitNum,
+        offset,
+    );
 
     res.json({
         status: "success",
         code: 200,
-        message: "Password updated successfully",
+        data: {
+            ...data,
+        },
     });
 });
 
