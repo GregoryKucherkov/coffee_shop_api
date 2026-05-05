@@ -84,7 +84,7 @@ export const getUserOrders = cntrlWrapper(async (req, res, next) => {
     res.json({
         status: "success",
         code: 200,
-        data: userOrders,
+        data: { ...userOrders },
     });
 });
 

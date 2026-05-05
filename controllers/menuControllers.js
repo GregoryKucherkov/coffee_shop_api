@@ -18,7 +18,7 @@ export const getAllMenu = cntrlWrapper(async (req, res, next) => {
     res.json({
         status: "success",
         code: 200,
-        data: allMenu,
+        data: { ...allMenu },
     });
 });
 

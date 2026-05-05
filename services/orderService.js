@@ -108,9 +108,10 @@ export const placeOrder = async (userId, items, useBonus = false) => {
     });
 };
 
-export const getUserOrders = ({ userId, offset, limit }) => {
-    return Order.findAll({
+export const getUserOrders = async ({ userId, offset, limit }) => {
+    const { count, rows } = await Order.findAndCountAll({
         where: { userId },
+        distinct: true,
         offset,
         limit: Number(limit),
         include: [
@@ -123,6 +124,12 @@ export const getUserOrders = ({ userId, offset, limit }) => {
         ],
         order: [["createdAt", "DESC"]],
     });
+
+    return {
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        orders: rows,
+    };
 };
 
 export const getOrderById = (query) => {

@@ -1,10 +1,16 @@
 import { Menu } from "../db/models/index.js";
 
-export const allMenu = ({ offset, limit }) => {
-    return Menu.findAll({
-        offset,
+export const allMenu = async ({ offset, limit }) => {
+    const { count, rows } = await Menu.findAndCountAll({
         limit: Number(limit),
+        offset: Number(offset),
     });
+
+    return {
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        items: rows,
+    };
 };
 
 export const getMenuItem = async ({ id }) => {
