@@ -8,6 +8,8 @@ import {
     OrderItem,
     Bonuses,
     User,
+    MenuPrice,
+    Size,
 } from "../db/models/index.js";
 import { envConfig } from "../envConfig.js";
 import { PAYMENTSTATUS } from "../constants/orderStatus.js";
@@ -18,7 +20,15 @@ const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export const placeOrder = async (userId, items, useBonus = false) => {
     const itemIds = items.map((i) => i.menuItemId);
-    const menuItems = await Menu.findAll({ where: { id: itemIds } });
+    const menuItems = await Menu.findAll({
+        where: { id: itemIds },
+        include: [
+            {
+                model: MenuPrice,
+                include: [Size],
+            },
+        ],
+    });
 
     const menuMap = Object.fromEntries(menuItems.map((m) => [m.id, m]));
 
@@ -33,13 +43,26 @@ export const placeOrder = async (userId, items, useBonus = false) => {
             );
         }
 
-        const subtotal = Number(product.price) * cartItem.quantity;
+        const priceEntry = product.MenuPrice.find((p) => {
+            if (!cartItem.size) return p.sizeId === null;
+            return p.Size?.name === cartItem.size;
+        });
+
+        if (!priceEntry) {
+            throw HttpError(
+                400,
+                `Size ${cartItem.size} not available for ${product.name}`,
+            );
+        }
+
+        const currentPrice = Number(priceEntry.price);
+        const subtotal = currentPrice * cartItem.quantity;
         total += subtotal;
 
         return {
             menuItemId: cartItem.menuItemId,
             quantity: cartItem.quantity,
-            price: product.price, // Save snapshot of price
+            price: currentPrice, // Save snapshot of price
             size: cartItem.size || null,
         };
     });
@@ -118,7 +141,10 @@ export const getUserOrders = async ({ userId, offset, limit }) => {
             {
                 model: OrderItem,
                 include: [
-                    { model: Menu, attributes: ["name", "price", "image_url"] },
+                    {
+                        model: Menu,
+                        attributes: ["name", "image_url"],
+                    },
                 ],
             },
         ],
@@ -138,9 +164,7 @@ export const getOrderById = (query) => {
         include: [
             {
                 model: OrderItem,
-                include: [
-                    { model: Menu, attributes: ["name", "price", "image_url"] },
-                ],
+                include: [{ model: Menu, attributes: ["name", "image_url"] }],
             },
         ],
     });
@@ -153,9 +177,7 @@ export const getAllOrders = ({ offset, limit }) => {
         include: [
             {
                 model: OrderItem,
-                include: [
-                    { model: Menu, attributes: ["name", "price", "image_url"] },
-                ],
+                include: [{ model: Menu, attributes: ["name", "image_url"] }],
             },
         ],
         order: [["createdAt", "DESC"]],

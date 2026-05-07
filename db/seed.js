@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { sequelize, Menu } from "./models/index.js";
+import { sequelize, Menu, Size, MenuPrice } from "./models/index.js";
 
 const seedsDirPath = path.resolve("db", "data");
 
@@ -18,12 +18,55 @@ const seedMenu = async (transaction) => {
         console.log("Menu already has data. Skipping seed.");
         return;
     }
-    // Option2 is to destroy
+
+    // Option2 is to destroy menu table
     // await Menu.destroy({ where: {}, transaction });
 
-    const data = await readRawSeedData("menu.json");
+    // 1. Seed Sizes first (Static lookup)
+    const sizes = await Size.bulkCreate(
+        [
+            { id: 1, name: "small" },
+            { id: 2, name: "medium" },
+            { id: 3, name: "large" },
+        ],
+        { transaction },
+    );
 
-    return await Menu.bulkCreate(data, { transaction });
+    // 2. Seed Menu items
+    const menuData = await readRawSeedData("menu.json");
+    const createdMenu = await Menu.bulkCreate(menuData, {
+        transaction,
+        returning: true,
+    });
+
+    const priceEntries = [];
+
+    createdMenu.forEach((dbItem, index) => {
+        const originalJson = menuData[index];
+        if (originalJson.hasSize === "true") {
+            sizes.forEach((size) => {
+                priceEntries.push({
+                    menuId: dbItem.id,
+                    sizeId: size.id,
+                    price:
+                        parseFloat(originalJson.price) +
+                        (size.name === "medium"
+                            ? 1.0
+                            : size.name === "large"
+                              ? 1.5
+                              : 0),
+                });
+            });
+        } else {
+            priceEntries.push({
+                menuId: dbItem.id,
+                sizeId: null,
+                price: originalJson.price,
+            });
+        }
+    });
+
+    return await MenuPrice.bulkCreate(priceEntries, { transaction });
 };
 
 export const initDb = async () => {

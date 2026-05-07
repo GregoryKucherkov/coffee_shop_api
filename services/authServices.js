@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 
 import { Op } from "sequelize";
 
-import { Bonuses, Menu, Order, OrderItem, User } from "../db/models/index.js";
+import { Bonuses, Order, User } from "../db/models/index.js";
 
 import { generateToken } from "../utils/jwt.js";
 

@@ -16,15 +16,9 @@ const Menu = sequelize.define("Menu", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-
-    size: {
-        type: DataTypes.ENUM(...drinkSize),
-        allowNull: false,
-    },
-
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+    hasSizes: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
     image_url: {
         type: DataTypes.STRING,
@@ -32,14 +26,31 @@ const Menu = sequelize.define("Menu", {
     },
 });
 
+const Size = sequelize.define("Size", {
+    name: { type: DataTypes.ENUM(...drinkSize), allowNull: true },
+});
+
+const MenuPrice = sequelize.define("MenuPrice", {
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+    },
+});
+
+const priceSchema = Joi.object({
+    price: Joi.number().precision(2).positive().required(),
+    size: Joi.string()
+        .valid(...drinkSize)
+        .allow(null)
+        .required(),
+});
+
 export const createMenuItemSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     category: Joi.string().min(3).max(30).required(),
     description: Joi.string().min(3).max(30).required(),
-    size: Joi.string()
-        .valid(...drinkSize)
-        .required(),
-    price: Joi.number().precision(2).required(),
+    hasSizes: Joi.boolean().required(),
+    prices: Joi.array().items(priceSchema).min(1).required(),
     image_url: Joi.string().uri().required(),
 });
 
@@ -47,9 +58,9 @@ export const updateMenuItemSchema = Joi.object({
     name: Joi.string().min(3).max(30),
     category: Joi.string().min(3).max(30),
     description: Joi.string().min(3).max(30),
-    size: Joi.string().valid(...drinkSize),
-    price: Joi.number().precision(2),
+    hasSizes: Joi.boolean(),
     image_url: Joi.string().uri(),
+    prices: Joi.array().items(priceSchema).min(1),
 });
 
-export default Menu;
+export { Menu, Size, MenuPrice };
